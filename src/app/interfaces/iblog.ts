@@ -2,6 +2,6 @@ export interface IBlog {
     id: number | string,
     postedBy: string,
     topic: string,
-    date: string,
+    date: Date,
     message: string
 }

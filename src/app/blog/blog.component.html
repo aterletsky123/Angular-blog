@@ -1,21 +1,31 @@
 <header class="header d-flex p-3">
     <h1 class="header__title fs-4">Angular Blog</h1>
     <div class="header__sign d-flex">
-        <button *ngIf="isAuthorized" type="button" data-bs-toggle="modal" data-bs-target="#add-post">Add post</button>
-        <button type="button" class="btn signIn-btn" data-bs-toggle="modal" data-bs-target="#sign-In">Sign In</button>
-        <button type="button" class="btn signUp-btn" data-bs-toggle="modal" data-bs-target="#sign-Up">Sign Up</button>
+        <ng-container *ngIf="isAuthorized">
+            <button type="button" class="btn signIn-btn" data-bs-toggle="modal" data-bs-target="#add-post">Add post</button>
+            <p class="user">{{currentUser.username}}</p>
+            <button type="button" class="btn signOut-btn" (click)="signOut()">Sign Out</button>
+        </ng-container>
+        <ng-container *ngIf="!isAuthorized">
+            <button type="button" class="btn signIn-btn" data-bs-toggle="modal" data-bs-target="#sign-In">Sign In</button>
+            <button type="button" class="btn signUp-btn" data-bs-toggle="modal" data-bs-target="#sign-Up">Sign Up</button>
+        </ng-container>
     </div>
 </header>
 <main class="main">
     <div class="container pt-2">
-        <div class="card mb-2">
+        <div *ngFor="let post of posts" class="card mb-2">
             <div class="card-body">
-                <h5 class="card-title">First post</h5>
+                <h5 class="card-title">{{post.topic}}</h5>
                 <div class="card-info d-flex">
-                    <p class="card-info-posted mb-2">Posted by: admin</p>
-                    <p class="card-text"><small class="text-muted">&#8986;10:00, 22.05.2020</small></p>
+                    <p class="card-info-posted mb-2">Posted by: {{post.postedBy}}</p>
+                    <p class="card-text"><small class="text-muted">&#8986;{{post.date | date:"HH:mm, dd.MM.YYYY"}}</small></p>
                 </div>
-                <p class="card-text">Sign Up to create your account and start to use Angular Blog</p>
+                <p class="card-text">{{post.message}}</p>
+                <div *ngIf="isAuthorized && currentUser.username === 'admin' || isAuthorized && post.postedBy === postedByUsername" class="manage">
+                    <button type="button" class="btn btn-warning postEdit">Edit</button>
+                    <button type="button" class="btn btn-danger postDelete">Delete</button>
+                </div>
             </div>
         </div>
     </div>
@@ -32,16 +42,16 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="signIn-email" class="form-label">Email:</label>
-                    <input type="email" class="form-control" id="signIn-email">
+                    <input type="email" class="form-control" id="signIn-email" [(ngModel)]="signInEmail">
                 </div>
                 <div class="mb-3">
                     <label for="signIn-password" class="form-label">Password:</label>
-                    <input type="password" class="form-control" id="signIn-password">
+                    <input type="password" class="form-control" id="signIn-password" [(ngModel)]="signInPass">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="submit" class="btn btn-success" (click)="checkUser()">Submit</button>
             </div>
         </div>
     </div>
@@ -57,20 +67,20 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="signUp-username" class="form-label">Username:</label>
-                    <input type="text" class="form-control" id="signUp-username">
+                    <input type="text" class="form-control" id="signUp-username" [(ngModel)]="signUpUsername">
                 </div>
                 <div class="mb-3">
                     <label for="signUp-email" class="form-label">Email:</label>
-                    <input type="email" class="form-control" id="signUp-email">
+                    <input type="email" class="form-control" id="signUp-email" [(ngModel)]="signUpEmail">
                 </div>
                 <div class="mb-3">
                     <label for="signUp-password" class="form-label">Password:</label>
-                    <input type="password" class="form-control" id="signUp-password">
+                    <input type="password" class="form-control" id="signUp-password" [(ngModel)]="signUpPass">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success">Submit</button>
+                <button type="submit" class="btn btn-success" (click)="createUser()">Submit</button>
             </div>
         </div>
     </div>
@@ -86,16 +96,16 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label for="addPost-title" class="form-label">Title:</label>
-                    <input type="text" class="form-control" id="addPost-title">
+                    <input type="text" class="form-control" id="addPost-title" [(ngModel)]="postTitle">
                 </div>
                 <div class="mb-3">
                     <label for="addPost-text" class="form-label">Text:</label>
-                    <textarea class="form-control" id="addPost-text"></textarea>
+                    <textarea class="form-control" id="addPost-text" [(ngModel)]="postText"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success">Post</button>
+                <button type="submit" class="btn btn-success" (click)="addPost()">Post</button>
             </div>
         </div>
     </div>
