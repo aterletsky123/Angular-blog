@@ -22,22 +22,21 @@
                     <p class="card-text"><small class="text-muted">&#8986;{{post.date | date:"HH:mm, dd.MM.YYYY"}}</small></p>
                 </div>
                 <p class="card-text">{{post.message}}</p>
-                <div *ngIf="isAuthorized && currentUser.username === 'admin' || isAuthorized && post.postedBy === postedByUsername" class="manage">
-                    <button type="button" class="btn btn-warning postEdit">Edit</button>
-                    <button type="button" class="btn btn-danger postDelete">Delete</button>
+                <div *ngIf="isAuthorized && currentUser.username === 'admin' || isAuthorized && post.postedBy === currentUser.username" class="manage">
+                    <button type="button" class="btn btn-warning postEdit" (click)="editPost(post)" data-bs-toggle="modal" data-bs-target="#add-post">Edit</button>
+                    <button type="button" class="btn btn-danger postDelete" (click)="deletePost(post)">Delete</button>
                 </div>
             </div>
         </div>
     </div>
 </main>
 
-<!-- Modal Sign In -->
 <div class="modal fade" id="sign-In">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Sign In</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" (click)="closeModalSignIn()"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -48,21 +47,22 @@
                     <label for="signIn-password" class="form-label">Password:</label>
                     <input type="password" class="form-control" id="signIn-password" [(ngModel)]="signInPass">
                 </div>
+                <small class="err-massage">{{errorMassage}}</small>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" (click)="closeModalSignIn()">Close</button>
                 <button type="submit" class="btn btn-success" (click)="checkUser()">Submit</button>
             </div>
         </div>
     </div>
 </div>
-<!-- Modal Sign Up -->
+
 <div class="modal fade" id="sign-Up">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Sign up</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" (click)="closeModalSignUp()"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -77,21 +77,22 @@
                     <label for="signUp-password" class="form-label">Password:</label>
                     <input type="password" class="form-control" id="signUp-password" [(ngModel)]="signUpPass">
                 </div>
+                <small class="err-massage">{{errorMassage}}</small>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success" (click)="createUser()">Submit</button>
+                <button type="button" class="btn btn-secondary" (click)="closeModalSignUp()">Close</button>
+                <button type="submit" class="btn btn-success" (click)="addUser()">Submit</button>
             </div>
         </div>
     </div>
 </div>
-<!-- Add post -->
+
 <div class="modal fade" id="add-post">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Add post</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" (click)="closeModalAddPost()"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -102,10 +103,12 @@
                     <label for="addPost-text" class="form-label">Text:</label>
                     <textarea class="form-control" id="addPost-text" [(ngModel)]="postText"></textarea>
                 </div>
+                <small class="err-massage">{{errorMassage}}</small>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success" (click)="addPost()">Post</button>
+                <button type="button" class="btn btn-secondary" (click)="closeModalAddPost()">Close</button>
+                <button *ngIf="!editStatus" type="submit" class="btn btn-success" (click)="addPost()">Post</button>
+                <button *ngIf="editStatus" type="submit" class="btn btn-success" (click)="saveEditPost()">Edit Post</button>
             </div>
         </div>
     </div>
