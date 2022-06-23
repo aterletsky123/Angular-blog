@@ -58,11 +58,13 @@ export class BlogComponent implements OnInit {
 
   checkUser(): void {
     if (this.signInEmail && this.signInPass) {
-      this.blogService.getUsers().forEach(user => { if (user.email.toLowerCase() === this.signInEmail.toLowerCase() && user.password.toLowerCase() === this.signInPass.toLowerCase()) this.currentUser = user });
-      if (this.currentUser) {
-        this.isAuthorized = true;
-        this.closeModalSignIn();
-      } else { this.errorMassage = 'User not found' }
+      this.blogService.getUsers().forEach(user => {
+        if (user.email.toLowerCase() === this.signInEmail.toLowerCase() && user.password.toLowerCase() === this.signInPass.toLowerCase()) {
+          this.isAuthorized = true;
+          this.currentUser = user;
+        }
+      });
+      this.isAuthorized ? this.closeModalSignIn() : this.errorMassage = 'User not found';
     } else { this.errorMassage = 'Please fill in all fields' }
   }
 
